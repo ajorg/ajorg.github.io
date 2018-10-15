@@ -3,4 +3,7 @@
 
 @import "{{ site.theme }}";
 @import url('https://fonts.googleapis.com/css?family=Indie+Flower');
-h1 { font-family: 'Indie Flower'; }
+h1 {
+  font-family: 'Indie Flower';
+  font-size: 56px;
+}
