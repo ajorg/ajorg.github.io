@@ -1,5 +1,5 @@
 ---
-title: An Inky Page
+title: An Inky Page...
 ---
 
 > Move along, nothing to see here.
