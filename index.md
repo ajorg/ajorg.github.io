@@ -2,6 +2,6 @@
 title: An Inky Page
 ---
 
-# An Inky Page...
+> Move along, nothing to see here.
 
 *Andrew Jorgensen*
