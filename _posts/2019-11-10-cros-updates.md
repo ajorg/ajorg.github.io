@@ -1,8 +1,6 @@
----
 title: "Getting Notified of Chrome OS Updates"
 layout: page
-date: 2019-10-11 17:09:10 -0000
----
+date: 2019-11-10 17:09:10 -0000
 
 # Getting Notified of Chrome OS Updates
 
