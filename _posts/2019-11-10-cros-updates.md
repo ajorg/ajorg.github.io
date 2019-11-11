@@ -1,6 +1,6 @@
 ---
 title: Getting Notified of Chrome OS Updates
-layout: post
+layout: page
 date: 2019-11-10
 ---
 
