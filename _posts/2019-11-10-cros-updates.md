@@ -4,8 +4,6 @@ layout: page
 date: 2019-11-10
 ---
 
-# Getting Notified of Chrome OS Updates
-
 I own too many Chrome OS devices (*Courage!*) . I want to know when there are updates available, so I tried to find a way to get notified whenever updates were posted for my devices. I found a couple ways. Maybe it's ironic that I'm using AWS to do this, but then again I work for AWS, so...
 
 ## CrOS Omaha
