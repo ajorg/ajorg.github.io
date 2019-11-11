@@ -2,13 +2,10 @@
 title: An Inky Page...
 ---
 
-<ul>
-  {% for post in site.posts %}
-    <li>
-      <a href="{{ post.url }}">{{ post.title }}</a>
-      {{ post.content }}
-    </li>
-  {% endfor %}
-</ul>
+{% for post in site.posts %}
+{{ post.date }}
+# <a href="{{ post.url }}">{{ post.title }}</a>
+{{ post.content }}
+{% endfor %}
 
 [*Andrew Jorgensen*](http://andrew.jorgensenfamily.us/)
