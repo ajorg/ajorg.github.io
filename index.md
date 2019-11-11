@@ -2,12 +2,10 @@
 title: An Inky Page...
 ---
 
-> Move along, nothing to see here.
-
 <ul>
   {% for post in site.posts %}
     <li>
-      <a href="{{ post.url }}">{{ post.title }}</a>
+      <a href="{{ post.url }}">{{ post.title }}{{ post.content }}</a>
     </li>
   {% endfor %}
 </ul>
