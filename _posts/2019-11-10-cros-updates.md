@@ -3,15 +3,17 @@ title: Getting Notified of Chrome OS Updates
 date: 2019-11-10
 ---
 
-I own too many Chrome OS devices (*Courage!*) . I want to know when there are updates available, so I tried to find a way to get notified whenever updates were posted for my devices. I found a couple ways. Maybe it's ironic that I'm using AWS to do this, but then again I work for AWS, so...
+I own too many Chrome OS devices (*Courage!*) . I want to know when there are updates available, so I tried to find a way to get notified whenever updates were posted for my devices. I found a couple of ways. Maybe it's ironic that I'm using AWS to do this, but then again I work for AWS, so...
 
 ## CrOS Omaha
 Google has a service where you can look up the current versions of Chrome OS for all supported devices at [https://cros-omahaproxy.appspot.com](https://cros-omahaproxy.appspot.com/viewer). This service takes a *long* time (about 25s) to respond, presumably because it's pulling data every time you hit it without any caching. But whatever, it works and yields accurate data.
 
 You can get the raw data as a CSV file from [https://cros-omahaproxy.appspot.com/all](https://cros-omahaproxy.appspot.com/all). I tried to get it to yield less data by some other URL but couldn't find anything. If you find a way, please let me know!
 
+I've been using an AWS Lambda function using this method for more than a year, but there's a better way.
+
 ## Update Service
-A better way is to query Google's update service directly, the same way your Chromebook does. Getting the right data from your Chromebook is a bit trickier, but the latency is a lot better. To discover how your chromebook is polling for updates, have a look at `file:///var/log/update_engine.log` where you'll see something like this buried in there:
+The better way is to query Google's update service directly, the same way your Chromebook does. Getting the right data from your Chromebook is a bit trickier, but the latency is a lot better. To discover how your chromebook is polling for updates, have a look at `file:///var/log/update_engine.log` where you'll see something like this buried in there:
 
 ```log
 [1109/122036.268126:INFO:action_processor.cc(51)] ActionProcessor: starting OmahaRequestAction
@@ -87,6 +89,8 @@ The piece we're interested in is `ChromeVersion` from this `action` element:
 <action ChromeOSVersion="12499.51.0" ChromeVersion="78.0.3904.92" IsDeltaPayload="false" MaxDaysToScatter="14" MetadataSignatureRsa="okC/hvhqmQnerQ33y4AWPYFI6yGLHKIPOmzKzb/ri4odvKEmr1KKMWvgXLxzTFTorBpl2I/Wrx634E61cMQSssQKPUQ9hAFXdSorIuO60kEgGZivQVMR4kktETka84SCuORgOzum9VN27V9MQyG3+CIS+C1BflPPGXPd6zw35FTh4LI4HkX6cIy6kTldxZt9V7XywEdLuZpQZmC2PI3kr1Nf9B+scgTwdHaoq9g2hCmbsxq+ivPKVjfVRrWNwVUVnERJs5WfK+27qmuf6a8piC2wl3ApyqzYda4iY/QLsWTuROYVNbf7YWKrPQF1QpzeWLmgDtuAThS0oLkFuGZwNw==" MetadataSize="65824" event="postinstall" sha256="MSAexfVkSoPRVl3sGQJGlY4Gl6pJRoXDXy1+BsHNpdg="/>
 ```
 
+Note that there's a separate `ChromeOSVersion` but that value is not the one you're familiar with, so we'll ignore it.
+
 We can get at that element with the XPath query `.//action[@ChromeVersion]`. A fairly minimal Python script to fetch the current version for a Chromebook looks like this:
 
 ```python
@@ -125,6 +129,6 @@ if __name__ == "__main__":
 ```
 
 ## Getting Notified
-To actually get notified whenever one of my Chromebooks gets an update, I've create an AWS Lambda function that queries the update service and stores the result in DynamoDB. When the queried version differs from the stored version, I post a message to an SNS topic. Since I've subscribed my phone to that SNS topic, I get a text message every time the update service gives a new response.
+To *actually* get notified when one of my Chromebooks gets an update, I've create an AWS Lambda function that queries the update service and stores the result in DynamoDB. The function is triggered by a CloudWatch Events scheduled event. When the queried version differs from the stored version, it posts a message to an SNS topic. Since I've subscribed my phone to that SNS topic, I get a text message when the update service gives a new response.
 
-The code for this is in GitHub, as it's more than I want to include in a blog post, and I'll improve it over time.
+The [code for this is in GitHub](https://github.com/ajorg/cros-updates) as it's more than I want to include in a blog post, and I may improve it over time.
